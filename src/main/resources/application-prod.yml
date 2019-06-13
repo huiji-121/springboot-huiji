@@ -1,0 +1,8 @@
+logging:
+  config: classpath:logConfig.xml
+server:
+  port: 8080
+trade:
+  url: http://172.18.206.149:8181
+  callback: https://trade.zoomdu.com/#/paySuccess
+  notify: https://tourists.zoomdu.com

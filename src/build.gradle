@@ -1,0 +1,79 @@
+import java.text.SimpleDateFormat
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE'
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.8'
+    }
+}
+
+group 'com.zoomdu'
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://dl.bintray.com/endofmaster/maven' }
+}
+
+dependencies {
+    compile 'com.endofmaster:commons-id:1.0.0'
+    compile 'com.endofmaster:commons-rest:1.0.2'
+    compile 'com.endofmaster:commons-utils:1.0.2'
+    compile 'com.endofmaster:commons-aliyun-oss:1.0.3'
+
+    compile 'com.aliyun:aliyun-java-sdk-core:4.0.6'
+    compile 'com.aliyun:aliyun-java-sdk-dysmsapi:1.1.0'
+
+    compile 'org.apache.commons:commons-lang3:3.1'
+    compile 'io.springfox:springfox-swagger2:2.9.2'
+    compile 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtime 'mysql:mysql-connector-java'
+
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+docker {
+    registryCredentials {
+        url = 'https://registry.cn-shenzhen.aliyuncs.com'
+        username = project.hasProperty('zoomduDockerUser') ? project.property('zoomduDockerUser') : '<zoomduDockerUser>'
+        password = project.hasProperty('zoomduDockerPassword') ? project.property('zoomduDockerPassword') : '<zoomduDockerPassword>'
+    }
+}
+
+ext {
+    dockerImageName = 'registry.cn-shenzhen.aliyuncs.com/zoomdu/tourguide-tourists:' + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+}
+
+
+task dockerBuild(type: DockerBuildImage, dependsOn: bootJar) {
+    copy {
+        from("src/main/docker/Dockerfile")
+        into("build/libs")
+    }
+    inputDir = file('build/libs')
+    tag = dockerImageName
+}
+
+task dockerPush(type: DockerPushImage, dependsOn: dockerBuild) {
+    imageName = dockerImageName
+}

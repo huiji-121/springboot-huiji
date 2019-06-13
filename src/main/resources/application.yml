@@ -1,0 +1,31 @@
+spring:
+  jackson:
+    serialization:
+      indent-output: true # 统一缩进格式
+    deserialization:
+      fail-on-unknown-properties: false # 忽略未知属性
+  datasource:
+    url:
+    username: root
+    password:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 300000
+      pool-name: zoomduPool
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+      connection-init-sql: ["SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"]
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    open-in-view: true
+    generate-ddl: true
+    database: mysql
+server:
+  port: 8080

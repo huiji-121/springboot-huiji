@@ -1,0 +1,7 @@
+logging:
+  level:
+    com.zoomdu: debug
+    com.endofmaster: debug
+spring:
+  jpa:
+    show-sql: true
