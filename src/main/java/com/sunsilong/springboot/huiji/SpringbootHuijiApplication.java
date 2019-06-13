@@ -1,4 +1,4 @@
-package com.zoomdu.tour.guide;
+package com.sunsilong.springboot.huiji;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +10,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
-public class TouristsApplication {
+public class SpringbootHuijiApplication {
 
-    private static final Logger logger = LoggerFactory.getLogger(TouristsApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpringbootHuijiApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(TouristsApplication.class);
+        SpringApplication app = new SpringApplication(SpringbootHuijiApplication.class);
         SimpleCommandLinePropertySource source = new SimpleCommandLinePropertySource(args);
         addDefaultProfile(app, source);
         Environment env = app.run(args).getEnvironment();
